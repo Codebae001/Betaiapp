@@ -1,10 +1,80 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated, Linking } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 
 const HelpScreen = () => {
-  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [showEmail, setShowEmail] = useState(false);
+  const supportEmail = "majorfortune72@gmail.com";
 
-  const privacyPolicyContent = `Privacy Policy for Bet Ai Betting Tips
+  const togglePolicy = () => {
+    setExpanded(!expanded);
+  };
+
+  const handleEmailPress = () => {
+    setShowEmail(!showEmail);
+  };
+
+  const handleEmailLink = () => {
+    Linking.openURL(`mailto:${supportEmail}`);
+  };
+
+  return (
+    <ScrollView style={styles.container}>
+      {/* Header Section */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Help Center</Text>
+        <Text style={styles.headerSubtitle}>We're here to assist you</Text>
+      </View>
+
+      {/* Support Email Section */}
+      <TouchableOpacity 
+        style={styles.supportLink}
+        onPress={handleEmailPress}
+      >
+        <MaterialIcons name="support-agent" size={24} color="#2E7D32" />
+        <Text style={styles.supportText}>Contact Support</Text>
+        <MaterialIcons 
+          name={showEmail ? "keyboard-arrow-up" : "keyboard-arrow-down"} 
+          size={24} 
+          color="#2E7D32" 
+        />
+      </TouchableOpacity>
+
+      {/* Email Display */}
+      {showEmail && (
+        <TouchableOpacity 
+          style={styles.emailContainer}
+          onPress={handleEmailLink}
+        >
+          <MaterialIcons name="email" size={20} color="#2E7D32" />
+          <Text style={styles.emailText}>{supportEmail}</Text>
+        </TouchableOpacity>
+      )}
+
+      {/* Privacy Policy Collapsible Section */}
+      <View style={styles.policyContainer}>
+        <TouchableOpacity 
+          style={styles.policyHeader} 
+          onPress={togglePolicy}
+        >
+          <View style={styles.policyHeaderContent}>
+            <MaterialIcons name="privacy-tip" size={24} color="#2E7D32" />
+            <Text style={styles.policyTitle}>Privacy Policy</Text>
+          </View>
+          <MaterialIcons 
+            name={expanded ? "keyboard-arrow-up" : "keyboard-arrow-down"} 
+            size={24} 
+            color="#2E7D32" 
+          />
+        </TouchableOpacity>
+
+        {expanded && (
+          <View style={styles.policyContent}>
+            <Text style={styles.policyDate}>Last updated: January 29, 2025</Text>
+            
+            <Text style={styles.policyText}>
+            Privacy Policy for Bet Ai Betting Tips
 
 Privacy Policy
 Last updated: January 29, 2025
@@ -143,56 +213,120 @@ You are advised to review this Privacy Policy periodically for any changes. Chan
 Contact Us
 If you have any questions about this Privacy Policy, You can contact us:
 
-By email: munened502@gmail.com`;
+By email: munened502@gmail.com
+            </Text>
 
-  return (
-    <View style={styles.container}>
-      {showPrivacyPolicy ? (
-        <ScrollView style={styles.scrollView}>
-          <Text style={styles.policyText}>{privacyPolicyContent}</Text>
-          <TouchableOpacity style={styles.button} onPress={() => setShowPrivacyPolicy(false)}>
-            <Text style={styles.buttonText}>Hide Privacy Policy</Text>
-          </TouchableOpacity>
-        </ScrollView>
-      ) : (
-        <TouchableOpacity style={styles.button} onPress={() => setShowPrivacyPolicy(true)}>
-          <Text style={styles.buttonText}> Privacy Policy</Text>
-        </TouchableOpacity>
-      )}
-    </View>
+            <Text style={styles.policyText}>
+            This Privacy Policy has been created with the 
+              help of the Free Privacy Policy Generator.
+            </Text>
+          </View>
+        )}
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#f0f8ff',
-    justifyContent: 'center',
+    backgroundColor: '#E8F5E9',
+  },
+  header: {
+    backgroundColor: '#2E7D32',
+    padding: 20,
     alignItems: 'center',
   },
-  scrollView: {
-    marginVertical: 16,
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 4,
+  },
+  headerSubtitle: {
+    fontSize: 16,
+    color: '#FFFFFF',
+    opacity: 0.9,
+  },
+  supportLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    margin: 16,
+    marginBottom: 16,
     padding: 16,
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    maxHeight: '80%',
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  supportText: {
+    flex: 1,
+    marginLeft: 12,
+    fontSize: 16,
+    color: '#2E7D32',
+    fontWeight: '500',
+  },
+  emailContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(46, 125, 50, 0.05)',
+    marginHorizontal: 16,
+    marginBottom: 16,
+    padding: 16,
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
+  },
+  emailText: {
+    marginLeft: 12,
+    fontSize: 16,
+    color: '#2E7D32',
+    textDecorationLine: 'underline',
+  },
+  policyContainer: {
+    backgroundColor: '#FFFFFF',
+    margin: 16,
+    borderRadius: 12,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  policyHeader: {
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#FFFFFF',
+  },
+  policyHeaderContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  policyTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#2E7D32',
+    marginLeft: 12,
+  },
+  policyContent: {
+    padding: 16,
+    backgroundColor: 'rgba(46, 125, 50, 0.05)',
+  },
+  policyDate: {
+    fontSize: 14,
+    color: '#666666',
+    marginBottom: 16,
   },
   policyText: {
     fontSize: 14,
-    lineHeight: 20,
-    color: '#333',
-  },
-  button: {
-    backgroundColor: '#007BFF',
-    padding: 10,
-    borderRadius: 8,
-    marginTop: 16,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    textAlign: 'center',
+    color: '#333333',
+    lineHeight: 22,
+    marginBottom: 16,
   },
 });
 

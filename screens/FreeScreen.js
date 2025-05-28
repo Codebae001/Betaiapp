@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
 import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
 
 const FreeScreen = () => {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigation = useNavigation();
 
   // Base URL for your API
   const apiUrl = 'https://betai-7d1a010ddc04.herokuapp.com/free'; // Backend endpoint for history data
@@ -16,7 +18,7 @@ const FreeScreen = () => {
         const response = await axios.get(apiUrl);
         setHistory(response.data);
       } catch (error) {
-        console.error('Error fetching history data:', error);
+        console.error('Error fetching data:', error);
       } finally {
         setLoading(false);
       }
@@ -24,6 +26,11 @@ const FreeScreen = () => {
 
     fetchData();
   }, []);
+
+  // Add navigation handler
+  const handleUpgradePress = () => {
+    navigation.navigate('Premium');
+  };
 
   // Render each item
   const renderItem = ({ item }) => (
@@ -38,6 +45,20 @@ const FreeScreen = () => {
 
   return (
     <View style={styles.container}>
+      {/* Welcome Banner */}
+      <View style={styles.banner}>
+        <Text style={styles.welcomeText}>Welcome to BetAI</Text>
+        <Text style={styles.bannerSubtext}>Start with these free predictions!</Text>
+      </View>
+
+      {/* Pro Tip Box */}
+      <View style={styles.tipContainer}>
+        <Text style={styles.tipTitle}>🔥 Pro Tip</Text>
+        <Text style={styles.tipText}>
+          Unlock 10x more predictions and premium features with our subscription plans!
+        </Text>
+      </View>
+
       {loading ? (
         <ActivityIndicator size="large" color="green" />
       ) : history.length === 0 ? (
@@ -49,12 +70,81 @@ const FreeScreen = () => {
           renderItem={renderItem}
         />
       )}
+
+      {/* Teaser Footer with navigation */}
+      <View style={styles.teaserFooter}>
+        <Text style={styles.teaserText}>Want more winning predictions?</Text>
+        <TouchableOpacity 
+          style={styles.upgradeButton}
+          onPress={handleUpgradePress}
+        >
+          <Text style={styles.upgradeButtonText}>Upgrade to Premium</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: '#f0f8ff' },
+  container: {
+    flex: 1,
+    backgroundColor: '#E8F5E9',
+  },
+  banner: {
+    backgroundColor: '#2E7D32',
+    padding: 16,
+    alignItems: 'center',
+  },
+  welcomeText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 4,
+  },
+  bannerSubtext: {
+    fontSize: 16,
+    color: '#FFFFFF',
+    opacity: 0.9,
+  },
+  tipContainer: {
+    margin: 16,
+    padding: 12,
+    backgroundColor: '#FFF',
+    borderRadius: 8,
+    borderLeftWidth: 4,
+    borderLeftColor: '#4CAF50',
+  },
+  tipTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#2E7D32',
+    marginBottom: 4,
+  },
+  tipText: {
+    fontSize: 14,
+    color: '#4A4A4A',
+  },
+  teaserFooter: {
+    padding: 16,
+    backgroundColor: 'rgba(46, 125, 50, 0.1)',
+    alignItems: 'center',
+  },
+  teaserText: {
+    fontSize: 16,
+    color: '#2E7D32',
+    marginBottom: 8,
+  },
+  upgradeButton: {
+    backgroundColor: '#2E7D32',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+  },
+  upgradeButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
   card: {
     backgroundColor: '#d4edda',
     padding: 16,
